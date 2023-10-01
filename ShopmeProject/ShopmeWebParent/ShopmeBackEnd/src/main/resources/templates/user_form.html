@@ -71,7 +71,7 @@
 		
 		
 		<!--form to add or update new user--> 
-		<form th:action="@{/users/save}" method="post" style="max-width: 700px; margin: 0 auto" th:object="${user}">
+		<form th:action="@{/users/save}" method="post" style="max-width: 700px; margin: 0 auto" onsubmit="return checkEmailUnique(this);" th:object="${user}">
 			<div class="border border-secondary rounded p-3">
 				<div class="form-group row">
 					<label class="col-sm-4 col-form-label">E-mail:</label>
@@ -133,7 +133,26 @@
 		</form>
 		
 		
-		
+		<div class="modal fade text-center" id="modalDialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					 <div class="modal-header">
+						 <h4 class="modal-title" id="modalTitle">Warning</h4>
+						 <button type="button" class="close" data-dismiss="modal">&times;</button>
+					 </div>
+					 
+					 <div class="modal-body">
+						 <span id="modalBody"></span>
+					 </div>
+					 
+					 <div class="modal-footer">
+						 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+					 </div>
+				</div>
+			</div>
+			
+			
+		</div>
 		
 		<!--Footer-->
 		<div class="text-center">
@@ -141,11 +160,42 @@
 		</div>
 </div>
 <script type="text/javascript">
+	<!--Redirect to users when click in cancel button -->
 	$(document).ready(function() {
 		$("#buttonCancel").on("click", function() {
 			window.location = "[[@{/users}]]";
 		});
 	});
+	
+	function checkEmailUnique(form) {
+		url = "[[@{/users/check_email}]]";
+		userEmail = $("#email").val();
+		csrfValue = $("input[name='_csrf']").val();
+		params = {email: userEmail, _csrf : csrfValue};
+		
+		$("#modalDialog").modal();
+		
+		$.post(url, params, function(response){
+			if(response == "OK"){
+				form.submit();
+			} else if (response == "Duplicated"){
+				showModalDialog("Warning","There is another user having the email :" + userEmail);
+			} else {
+				showModalDialog("Error", "Unknown response from server");
+			}
+			
+		}).fail(function(){ 
+			showModalDialog("Error", "Could not connect to the server");
+		});
+		return false;
+	}
+	
+	function showModalDialog(title, message){
+		$("#modalTitle").text(title);
+		$("#modalBody").text(message);
+		$("#modalTitle").modal();
+	}
+	
 </script>
 </body>
 </html>
