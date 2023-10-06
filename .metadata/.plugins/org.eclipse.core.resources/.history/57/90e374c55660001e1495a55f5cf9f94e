@@ -1,0 +1,6 @@
+*.icon-white {color:white}
+*.icon-red {color:red}
+*.icon-cadetblue {color:cadetblue}
+*.icon-dark {color:gray}
+*.icon-green {color:greenyellow}
+*.icon-gree {color:blue}
