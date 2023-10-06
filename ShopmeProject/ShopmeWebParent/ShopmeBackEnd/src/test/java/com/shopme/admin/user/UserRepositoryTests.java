@@ -97,10 +97,16 @@ public class UserRepositoryTests {
 	}
 	
 	
-	
-	
-	
-	
-
-	
+	@Test
+	public void testCountById() {
+		Integer id = 5;
+		Long countById = repo.countById(id);
+		
+		assertThat(countById).isNotNull().isGreaterThan(0);
+		
+		
+		
+		
+	}
+		
 }
